@@ -279,6 +279,11 @@ export function App() {
               cartJobs={cartJobs}
               state={state}
               onStatus={(job, status) => setJobStatus(job, status)}
+              onSelect={(job) => {
+                setSelectedId(job.id);
+                setPanel("details");
+              }}
+              onRemove={(job) => toggleCart(job)}
               onExport={() => downloadState(state)}
               onImport={importState}
               onPref={(prefs) => updateState((current) => ({ ...current, prefs: { ...current.prefs, ...prefs } }))}
@@ -354,7 +359,7 @@ function JobRow({
           <span>{job.remoteScope}</span>
           <span>{job.locationRestriction}</span>
           <span>{job.source}</span>
-          {job.tags.slice(0, 3).map((tag) => <span key={tag}>{tag}</span>)}
+          {job.tags.slice(0, 3).map((tag, index) => <span key={`${tag}-${index}`}>{tag}</span>)}
         </div>
       </div>
       <div className="job-actions" onClick={(event) => event.stopPropagation()}>
@@ -411,6 +416,9 @@ function JobDetails({
         <div><dt>Posted</dt><dd>{job.postingDate ?? "Unknown"}</dd></div>
       </dl>
       <div className="button-grid">
+        <button className={status === "new" ? "active" : ""} type="button" onClick={() => onStatus("new")}>
+          New
+        </button>
         {statusOptions.map((option) => (
           <button key={option} className={status === option ? "active" : ""} type="button" onClick={() => onStatus(option)}>
             {statusLabels[option]}
@@ -424,6 +432,10 @@ function JobDetails({
       <a className="apply-link" href={job.applyUrl} target="_blank" rel="noreferrer">
         Open application <ExternalLink size={16} aria-hidden="true" />
       </a>
+      <section className="description-box" aria-label="Job description">
+        <h3>Description</h3>
+        <p>{job.description || "No description provided by source."}</p>
+      </section>
       <label className="field">
         <span>Resume version</span>
         <input value={note?.resumeVersion ?? ""} onChange={(event) => onJobNote({ resumeVersion: event.target.value })} placeholder="Resume used for this job" />
@@ -445,6 +457,8 @@ function SettingsPanel({
   cartJobs,
   state,
   onStatus,
+  onSelect,
+  onRemove,
   onExport,
   onImport,
   onPref,
@@ -452,6 +466,8 @@ function SettingsPanel({
   cartJobs: Job[];
   state: UserState;
   onStatus: (job: Job, status: JobStatus) => void;
+  onSelect: (job: Job) => void;
+  onRemove: (job: Job) => void;
   onExport: () => void;
   onImport: (file: File | undefined) => void;
   onPref: (prefs: Partial<UserState["prefs"]>) => void;
@@ -466,11 +482,18 @@ function SettingsPanel({
       <div className="cart-list">
         {cartJobs.length === 0 ? <p className="muted">Cart empty.</p> : cartJobs.map((job) => (
           <div className="cart-row" key={job.id}>
-            <div>
+            <button className="cart-row-main" type="button" onClick={() => onSelect(job)}>
               <strong>{job.title}</strong>
               <span>{job.company}</span>
+            </button>
+            <div className="cart-row-actions">
+              <a href={job.applyUrl} target="_blank" rel="noreferrer">
+                Apply <ExternalLink size={14} aria-hidden="true" />
+              </a>
+              <button type="button" onClick={() => onStatus(job, "applied")}>Applied</button>
+              <button type="button" onClick={() => onStatus(job, "skipped")}>Skipped</button>
+              <button type="button" onClick={() => onRemove(job)}>Remove</button>
             </div>
-            <button type="button" onClick={() => onStatus(job, "applied")}>Applied</button>
           </div>
         ))}
       </div>
