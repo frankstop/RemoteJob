@@ -9,8 +9,6 @@ RemoteJob is a static remote-job tracker for people who apply in batches and nee
 
 Live app: [frankstop.github.io/RemoteJob](https://frankstop.github.io/RemoteJob/)
 
-Repo: [github.com/frankstop/RemoteJob](https://github.com/frankstop/RemoteJob)
-
 ## Use Case
 
 Most job boards are discovery feeds. RemoteJob is closer to an application workbench.
