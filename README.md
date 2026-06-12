@@ -1,19 +1,84 @@
 # RemoteJob
 
-Static remote-job tracker for GitHub Pages.
+[![Jobs polled](https://img.shields.io/badge/jobs%20polled-129-168f8f)](https://github.com/frankstop/RemoteJob/blob/main/public/data/jobs.json)
+[![Sources](https://img.shields.io/badge/sources-3-446b6b)](https://github.com/frankstop/RemoteJob/blob/main/config/source_policy.json)
+[![GitHub Pages](https://img.shields.io/badge/site-live-168f8f)](https://frankstop.github.io/RemoteJob/)
+[![Privacy](https://img.shields.io/badge/user%20state-localStorage-446b6b)](docs/privacy.md)
 
-RemoteJob fetches remote job listings from permitted public sources, normalizes them into JSON, and serves a browser app for daily job-search tracking. User notes and statuses stay in `localStorage`.
+RemoteJob is a static remote-job tracker for people who apply in batches and need memory across sessions. It polls public remote-job APIs, normalizes listings into JSON, and gives users a browser-only workspace for filtering, saving, skipping, applying, notes, company blocking, and export.
+
+Live app: [frankstop.github.io/RemoteJob](https://frankstop.github.io/RemoteJob/)
+
+Repo: [github.com/frankstop/RemoteJob](https://github.com/frankstop/RemoteJob)
+
+## Use Case
+
+Most job boards are discovery feeds. RemoteJob is closer to an application workbench.
+
+Use it when you want to:
+
+- Check fresh remote listings daily.
+- Filter by role family, source, salary, remote scope, age, and status.
+- Track what you already saw, saved, skipped, or applied to.
+- Keep job notes, resume-version notes, and company notes in one place.
+- Block companies that waste time.
+- Build an apply cart for batch application sessions.
+- Back up or move browser state with JSON export/import.
+
+No accounts. No app server. No user tracking upload.
 
 ## Features
 
+- Static React + Vite app deployable to GitHub Pages.
 - Scheduled GitHub Actions refresh, four times daily.
-- Public JSON dataset.
-- Remotive, Remote OK, and Arbeitnow source adapters.
+- Public dataset at `public/data/jobs.json`.
+- Source policy at `config/source_policy.json`.
+- Source adapters for Remotive, Remote OK, and Arbeitnow.
 - Role-family classification across software, data, product, design, support, sales, marketing, operations, finance, recruiting, legal, writing, education, healthcare, project management, and other roles.
-- Search, filters, status controls, company blocking, notes, apply cart.
-- Import and export local tracking JSON.
+- Full-text search plus structured filters.
+- Explainable fit score with visible reasons.
+- Per-job statuses: new, seen, saved, skipped, applied, interviewing, rejected, offer.
+- Apply cart with batch status updates.
+- Job notes, company notes, company blocking.
+- Local-only persistence via `localStorage`.
+- JSON export and import for user state.
 
-## Local dev
+## Data Sources
+
+Current live dataset:
+
+- Jobs polled: `129`
+- Sources: `Remotive`, `Remote OK`, `Arbeitnow`
+
+Source rules:
+
+- Use public APIs and structured feeds only.
+- Show source names.
+- Link to original job postings.
+- Remove any source if provider terms disallow indexing, storage, or public redistribution.
+
+More detail: [docs/data-sources.md](docs/data-sources.md)
+
+## Architecture
+
+```text
+RemoteJob/
+  .github/workflows/
+    pages.yml          # build and deploy GitHub Pages
+    update-jobs.yml    # scheduled dataset refresh
+  config/
+    source_policy.json # source rules and endpoints
+  public/data/
+    jobs.json          # normalized listings
+    sources.json       # source metadata
+  scripts/
+    fetch-jobs.mjs     # API fetch, normalize, dedupe, publish
+  src/
+    App.tsx            # app shell and workflows
+    lib/               # filtering, scoring, storage, types
+```
+
+## Local Dev
 
 ```bash
 npm install
@@ -23,27 +88,44 @@ npm run dev
 ## Build
 
 ```bash
+npm run lint
 npm run build
 ```
 
-## Refresh data
+## Refresh Data
 
 ```bash
 npm run fetch:jobs
 ```
 
-The fetch script writes:
+Writes:
 
 - `public/data/jobs.json`
 - `public/data/sources.json`
 
 ## GitHub Pages
 
-Push to `main`. `pages.yml` builds and deploys `dist`.
+`pages.yml` builds and deploys `dist` from `main`.
 
-`update-jobs.yml` refreshes the dataset on a cron schedule and commits JSON changes.
+`update-jobs.yml` refreshes job data on this schedule:
 
-## Source policy
+```yaml
+12 5,11,17,23 * * *
+```
 
-See `config/source_policy.json` and `docs/data-sources.md`.
+## Privacy
+
+RemoteJob stores user-specific state only in browser `localStorage`.
+
+Stored locally:
+
+- Job statuses.
+- Notes.
+- Resume-version labels.
+- Company notes.
+- Blocked companies.
+- Preferences.
+- Apply cart.
+
+More detail: [docs/privacy.md](docs/privacy.md)
 
