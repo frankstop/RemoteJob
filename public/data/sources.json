@@ -1,29 +1,185 @@
 {
-  "generatedAt": "2026-06-12T17:29:44.340Z",
+  "generatedAt": "2026-06-12T18:10:27.970Z",
   "sources": [
     {
-      "name": "Remotive",
-      "docs": "https://remotive.com/remote-jobs/api",
-      "endpoint": "https://remotive.com/api/remote-jobs",
+      "name": "DigitalOcean",
+      "category": "NOC / Infrastructure",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/digitalocean98/jobs?content=true",
       "enabled": true,
       "requiresKey": false,
-      "attribution": "Show source name and link to original listing."
+      "attribution": "Show employer name and link to original employer ATS listing."
     },
     {
-      "name": "Remote OK",
-      "docs": "https://remoteok.com/api",
-      "endpoint": "https://remoteok.com/api",
+      "name": "Huntress",
+      "category": "Security Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/huntress/jobs?content=true",
       "enabled": true,
       "requiresKey": false,
-      "attribution": "Show source name and link to original listing."
+      "attribution": "Show employer name and link to original employer ATS listing."
     },
     {
-      "name": "Arbeitnow",
-      "docs": "https://www.arbeitnow.com/api/job-board-api",
-      "endpoint": "https://www.arbeitnow.com/api/job-board-api",
+      "name": "Figma",
+      "category": "SaaS Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/figma/jobs?content=true",
       "enabled": true,
       "requiresKey": false,
-      "attribution": "Show source name and link to original listing."
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Brex",
+      "category": "Fintech / Payments",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/brex/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Airtable",
+      "category": "SaaS Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/airtable/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "DoorDash",
+      "category": "SaaS Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/doordashusa/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Lyft",
+      "category": "SaaS Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/lyft/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Robinhood",
+      "category": "Fintech / Payments",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/robinhood/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Modern Health",
+      "category": "Healthcare IT",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/modernhealth/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Fastly",
+      "category": "NOC / Infrastructure",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/fastly/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Braze",
+      "category": "SaaS Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/braze/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Intercom",
+      "category": "SaaS Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/intercom/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "GitLab",
+      "category": "SaaS Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/gitlab/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Tanium",
+      "category": "Security Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/tanium/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Abnormal Security",
+      "category": "Security Support",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/abnormalsecurity/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Tailscale",
+      "category": "NOC / Infrastructure",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/tailscale/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "PlanetScale",
+      "category": "NOC / Infrastructure",
+      "provider": "greenhouse",
+      "docs": "https://developers.greenhouse.io/job-board.html",
+      "endpoint": "https://boards-api.greenhouse.io/v1/boards/planetscale/jobs?content=true",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
+    },
+    {
+      "name": "Redis",
+      "category": "NOC / Infrastructure",
+      "provider": "ashby",
+      "docs": "https://developers.ashbyhq.com/docs/posting-api",
+      "endpoint": "https://api.ashbyhq.com/posting-api/job-board/redis",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show employer name and link to original employer ATS listing."
     }
   ]
 }

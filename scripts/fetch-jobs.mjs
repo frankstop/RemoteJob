@@ -25,6 +25,12 @@ const families = [
 function cleanText(value) {
   return String(value ?? "")
     .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, "\"")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -46,8 +52,9 @@ function remoteScope(location = "", remote = true) {
   const lower = String(location).toLowerCase();
   if (!remote && lower.includes("hybrid")) return "hybrid";
   if (lower.includes("worldwide") || lower.includes("global") || lower.includes("anywhere")) return "global";
-  if (lower.includes("timezone") || lower.includes("emea") || lower.includes("americas") || lower.includes("europe")) return "region";
+  if (lower.includes("remote - us") || lower.includes("remote, us")) return "country";
   if (lower.includes("united states") || lower.includes("usa") || lower.includes("canada") || lower.includes("uk")) return "country";
+  if (lower.includes("timezone") || lower.includes("emea") || lower.includes("americas") || lower.includes("europe")) return "region";
   return remote ? "unknown" : "hybrid";
 }
 
@@ -58,117 +65,150 @@ function normalizeSalary(min, max, text = "") {
   return { salaryMin, salaryMax, currency: salaryMin || salaryMax ? "USD" : null };
 }
 
+function normalizeDate(value) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString().slice(0, 10);
+}
+
 async function fetchJson(source) {
   const response = await fetch(source.endpoint, {
     headers: {
-      "accept": "application/json",
-      "user-agent": "RemoteJob static job indexer (https://github.com/frankstop/RemoteJob)"
+      accept: "application/json",
+      "user-agent": "RemoteJob employer ATS indexer (https://github.com/frankstop/RemoteJob)"
     }
   });
   if (!response.ok) throw new Error(`${source.name} ${response.status}`);
   return response.json();
 }
 
-function fromRemotive(payload) {
+function greenhouseLocation(item) {
+  return cleanText(item.location?.name ?? item.location ?? "Remote") || "Remote";
+}
+
+function greenhouseTags(source, item) {
+  return [
+    source.category,
+    ...(item.departments ?? []).map((department) => department?.name),
+    ...(item.offices ?? []).map((office) => office?.name),
+  ].filter(Boolean).map(cleanText);
+}
+
+function fromGreenhouse(source, payload) {
   return (payload.jobs ?? []).map((item) => {
-    const tags = [...(item.tags ?? []), item.category].filter(Boolean).map(cleanText);
-    const salary = normalizeSalary(null, null, item.salary);
     const title = cleanText(item.title);
-    const description = cleanText(item.description);
-    const company = cleanText(item.company_name);
+    const company = cleanText(source.name);
+    const description = cleanText(item.content);
+    const tags = greenhouseTags(source, item);
+    const location = greenhouseLocation(item);
+    const salary = normalizeSalary(null, null, description);
+
     return {
-      id: hashId([title, company, item.url]),
-      sourceIds: [`remotive:${item.id}`],
+      id: hashId([source.provider, source.slug, item.id]),
+      sourceIds: [`greenhouse:${source.slug}:${item.id}`],
       title,
       company,
       roleFamily: classifyRole(title, tags, description),
-      remoteScope: remoteScope(item.candidate_required_location),
-      locationRestriction: cleanText(item.candidate_required_location) || "Remote",
+      remoteScope: remoteScope(location),
+      locationRestriction: location,
       ...salary,
-      postingDate: item.publication_date ? new Date(item.publication_date).toISOString().slice(0, 10) : null,
+      postingDate: normalizeDate(item.updated_at),
       firstSeenAt: now,
       lastSeenAt: now,
-      source: "Remotive",
+      source: source.name,
       tags,
-      applyUrl: item.url,
+      applyUrl: item.absolute_url,
       description,
     };
   });
 }
 
-function fromRemoteOk(payload) {
-  return payload
-    .filter((item) => item && item.position)
-    .map((item) => {
-      const tags = (item.tags ?? []).map(cleanText);
-      const salary = normalizeSalary(item.salary_min, item.salary_max, "");
-      const title = cleanText(item.position);
-      const description = cleanText(item.description);
-      const company = cleanText(item.company);
-      return {
-        id: hashId([title, company, item.url]),
-        sourceIds: [`remoteok:${item.id}`],
-        title,
-        company,
-        roleFamily: classifyRole(title, tags, description),
-        remoteScope: remoteScope(item.location),
-        locationRestriction: cleanText(item.location) || "Remote",
-        ...salary,
-        postingDate: item.date ? new Date(item.date).toISOString().slice(0, 10) : null,
-        firstSeenAt: now,
-        lastSeenAt: now,
-        source: "Remote OK",
-        tags,
-        applyUrl: item.url,
-        description,
-      };
-    });
+function ashbyJobs(payload) {
+  if (Array.isArray(payload.jobs)) return payload.jobs;
+  if (Array.isArray(payload.jobPostings)) return payload.jobPostings;
+  return [];
 }
 
-function fromArbeitnow(payload) {
-  return (payload.data ?? [])
-    .filter((item) => item.remote)
-    .map((item) => {
-      const tags = (item.tags ?? []).map(cleanText);
-      const title = cleanText(item.title);
-      const description = cleanText(item.description);
-      const company = cleanText(item.company_name);
-      const date = item.created_at ? new Date(item.created_at * 1000).toISOString().slice(0, 10) : null;
-      return {
-        id: hashId([title, company, item.url]),
-        sourceIds: [`arbeitnow:${item.slug}`],
-        title,
-        company,
-        roleFamily: classifyRole(title, tags, description),
-        remoteScope: remoteScope(item.location, item.remote),
-        locationRestriction: cleanText(item.location) || "Remote",
-        salaryMin: null,
-        salaryMax: null,
-        currency: null,
-        postingDate: date,
-        firstSeenAt: now,
-        lastSeenAt: now,
-        source: "Arbeitnow",
-        tags,
-        applyUrl: item.url,
-        description,
-      };
-    });
+function fromAshby(source, payload) {
+  return ashbyJobs(payload).map((item) => {
+    const title = cleanText(item.title);
+    const company = cleanText(source.name);
+    const description = cleanText(item.descriptionPlain ?? item.descriptionHtml ?? item.description);
+    const location = cleanText(item.locationName ?? item.location ?? "Remote") || "Remote";
+    const tags = [source.category, item.department, item.team].filter(Boolean).map(cleanText);
+    const salary = normalizeSalary(null, null, `${item.compensation ?? ""} ${description}`);
+    const applyUrl = item.jobUrl ?? item.applyUrl ?? `https://jobs.ashbyhq.com/${source.slug}/${item.id}`;
+
+    return {
+      id: hashId([source.provider, source.slug, item.id, title]),
+      sourceIds: [`ashby:${source.slug}:${item.id}`],
+      title,
+      company,
+      roleFamily: classifyRole(title, tags, description),
+      remoteScope: remoteScope(location),
+      locationRestriction: location,
+      ...salary,
+      postingDate: normalizeDate(item.publishedAt ?? item.updatedAt ?? item.createdAt),
+      firstSeenAt: now,
+      lastSeenAt: now,
+      source: source.name,
+      tags,
+      applyUrl,
+      description,
+    };
+  });
+}
+
+function fromLever(source, payload) {
+  const postings = Array.isArray(payload) ? payload : [];
+  return postings.map((item) => {
+    const title = cleanText(item.text);
+    const company = cleanText(source.name);
+    const description = cleanText(item.descriptionPlain ?? item.description);
+    const location = cleanText(item.categories?.location ?? "Remote") || "Remote";
+    const tags = [source.category, item.categories?.team, item.categories?.commitment].filter(Boolean).map(cleanText);
+    const salary = normalizeSalary(null, null, description);
+
+    return {
+      id: hashId([source.provider, source.slug, item.id]),
+      sourceIds: [`lever:${source.slug}:${item.id}`],
+      title,
+      company,
+      roleFamily: classifyRole(title, tags, description),
+      remoteScope: remoteScope(location),
+      locationRestriction: location,
+      ...salary,
+      postingDate: normalizeDate(item.createdAt),
+      firstSeenAt: now,
+      lastSeenAt: now,
+      source: source.name,
+      tags,
+      applyUrl: item.hostedUrl ?? item.applyUrl,
+      description,
+    };
+  });
 }
 
 const normalizers = {
-  Remotive: fromRemotive,
-  "Remote OK": fromRemoteOk,
-  Arbeitnow: fromArbeitnow,
+  greenhouse: fromGreenhouse,
+  ashby: fromAshby,
+  lever: fromLever,
 };
 
 const results = [];
 const failures = [];
+const enabledSources = policy.sources.filter((item) => item.enabled);
 
-for (const source of policy.sources.filter((item) => item.enabled)) {
+for (const source of enabledSources) {
+  const normalize = normalizers[source.provider];
+  if (!normalize) {
+    failures.push({ source: source.name, error: `Unsupported provider: ${source.provider}` });
+    continue;
+  }
+
   try {
     const payload = await fetchJson(source);
-    results.push(...normalizers[source.name](payload));
+    results.push(...normalize(source, payload));
   } catch (error) {
     failures.push({ source: source.name, error: error.message });
   }
@@ -176,7 +216,7 @@ for (const source of policy.sources.filter((item) => item.enabled)) {
 
 const deduped = new Map();
 for (const job of results) {
-  const key = hashId([job.title.replace(/\b(remote|senior|jr|junior)\b/gi, ""), job.company]);
+  const key = hashId([job.title.replace(/\b(remote|senior|sr|jr|junior)\b/gi, ""), job.company]);
   const existing = deduped.get(key);
   if (!existing) {
     deduped.set(key, job);
@@ -202,7 +242,7 @@ await writeFile(
   JSON.stringify(
     {
       generatedAt: now,
-      sources: policy.sources.filter((source) => source.enabled).map((source) => source.name),
+      sources: enabledSources.map((source) => source.name),
       failures,
       jobs,
     },
@@ -216,8 +256,10 @@ await writeFile(
   JSON.stringify(
     {
       generatedAt: now,
-      sources: policy.sources.map(({ name, docs, endpoint, enabled, requiresKey, attribution }) => ({
+      sources: policy.sources.map(({ name, category, provider, docs, endpoint, enabled, requiresKey, attribution }) => ({
         name,
+        category,
+        provider,
         docs,
         endpoint,
         enabled,
@@ -230,6 +272,5 @@ await writeFile(
   )
 );
 
-console.log(`Wrote ${jobs.length} jobs from ${policy.sources.length} sources`);
+console.log(`Wrote ${jobs.length} jobs from ${enabledSources.length} employer ATS sources`);
 if (failures.length) console.warn(JSON.stringify(failures, null, 2));
-

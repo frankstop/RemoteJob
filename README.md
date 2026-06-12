@@ -1,11 +1,11 @@
 # RemoteJob
 
-[![Jobs polled](https://img.shields.io/badge/jobs%20polled-129-168f8f)](https://github.com/frankstop/RemoteJob/blob/main/public/data/jobs.json)
-[![Sources](https://img.shields.io/badge/sources-3-446b6b)](https://github.com/frankstop/RemoteJob/blob/main/config/source_policy.json)
+[![Jobs polled](https://img.shields.io/badge/jobs%20polled-1579-168f8f)](https://github.com/frankstop/RemoteJob/blob/main/public/data/jobs.json)
+[![Sources](https://img.shields.io/badge/sources-18-446b6b)](https://github.com/frankstop/RemoteJob/blob/main/config/source_policy.json)
 [![GitHub Pages](https://img.shields.io/badge/site-live-168f8f)](https://frankstop.github.io/RemoteJob/)
 [![Privacy](https://img.shields.io/badge/user%20state-localStorage-446b6b)](docs/privacy.md)
 
-RemoteJob is a static remote-job tracker for people who apply in batches and need memory across sessions. It polls public remote-job APIs, normalizes listings into JSON, and gives users a browser-only workspace for filtering, saving, skipping, applying, notes, company blocking, and export.
+RemoteJob is a static remote-job tracker for people who apply in batches and need memory across sessions. It polls employer-direct public ATS APIs, normalizes listings into JSON, and gives users a browser-only workspace for filtering, saving, skipping, applying, notes, company blocking, and export.
 
 Live app: [frankstop.github.io/RemoteJob](https://frankstop.github.io/RemoteJob/)
 
@@ -31,7 +31,7 @@ No accounts. No app server. No user tracking upload.
 - Scheduled GitHub Actions refresh, four times daily.
 - Public dataset at `public/data/jobs.json`.
 - Source policy at `config/source_policy.json`.
-- Source adapters for Remotive, Remote OK, and Arbeitnow.
+- Source adapters for Greenhouse, Ashby, and Lever employer ATS feeds.
 - Role-family classification across software, data, product, design, support, sales, marketing, operations, finance, recruiting, legal, writing, education, healthcare, project management, and other roles.
 - Full-text search plus structured filters.
 - Explainable fit score with visible reasons.
@@ -45,15 +45,16 @@ No accounts. No app server. No user tracking upload.
 
 Current live dataset:
 
-- Jobs polled: `129`
-- Sources: `Remotive`, `Remote OK`, `Arbeitnow`
+- Jobs polled: `1579`
+- Sources: 18 employer ATS sources in `config/source_policy.json`
 
 Source rules:
 
-- Use public APIs and structured feeds only.
+- Use employer-direct public ATS APIs only.
 - Show source names.
 - Link to original job postings.
 - Remove any source if provider terms disallow indexing, storage, or public redistribution.
+- Do not use aggregator pages as canonical apply sources.
 
 More detail: [docs/data-sources.md](docs/data-sources.md)
 
@@ -126,4 +127,3 @@ Stored locally:
 - Apply cart.
 
 More detail: [docs/privacy.md](docs/privacy.md)
-
