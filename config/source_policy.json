@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-06-12",
+  "policy": "Use public APIs and structured feeds only. Keep attribution visible. Remove any source if provider terms disallow indexing, storage, or public redistribution.",
+  "sources": [
+    {
+      "name": "Remotive",
+      "endpoint": "https://remotive.com/api/remote-jobs",
+      "docs": "https://remotive.com/remote-jobs/api",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show source name and link to original listing.",
+      "storage": "Store normalized listing facts in public JSON."
+    },
+    {
+      "name": "Remote OK",
+      "endpoint": "https://remoteok.com/api",
+      "docs": "https://remoteok.com/api",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show source name and link to original listing.",
+      "storage": "Store normalized listing facts in public JSON."
+    },
+    {
+      "name": "Arbeitnow",
+      "endpoint": "https://www.arbeitnow.com/api/job-board-api",
+      "docs": "https://www.arbeitnow.com/api/job-board-api",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show source name and link to original listing.",
+      "storage": "Store normalized listing facts in public JSON."
+    }
+  ]
+}
+

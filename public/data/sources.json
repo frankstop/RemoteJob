@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-06-12T17:29:44.340Z",
+  "sources": [
+    {
+      "name": "Remotive",
+      "docs": "https://remotive.com/remote-jobs/api",
+      "endpoint": "https://remotive.com/api/remote-jobs",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show source name and link to original listing."
+    },
+    {
+      "name": "Remote OK",
+      "docs": "https://remoteok.com/api",
+      "endpoint": "https://remoteok.com/api",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show source name and link to original listing."
+    },
+    {
+      "name": "Arbeitnow",
+      "docs": "https://www.arbeitnow.com/api/job-board-api",
+      "endpoint": "https://www.arbeitnow.com/api/job-board-api",
+      "enabled": true,
+      "requiresKey": false,
+      "attribution": "Show source name and link to original listing."
+    }
+  ]
+}
