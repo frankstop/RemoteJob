@@ -454,13 +454,20 @@ h2 {
 
 .detail-panel {
   min-height: 520px;
-  overflow: hidden;
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .panel-tabs {
   gap: 4px;
   padding: 8px;
   border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface);
 }
 
 .panel-tabs button {
@@ -640,6 +647,8 @@ h2 {
   .detail-panel {
     grid-column: 1 / -1;
     position: static;
+    max-height: none;
+    overflow: visible;
   }
 }
 
